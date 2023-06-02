@@ -3,9 +3,6 @@ import numpy as np
 import math
 import cv2
 
-def sigmoid(x):
- return 1/(1 + np.exp(-x))
-
 VOC_CLASSES = (  # always index 0
 'aeroplane', 'bicycle', 'bird', 'boat',
 'bottle', 'bus', 'car', 'cat', 'chair',
@@ -54,8 +51,6 @@ assert max_cls.item() == nn_out[0,d4,d2,d3]
 
 # load image
 im = cv2.imread('dog52.jpg')  # BGR
-#iH, iW, iC = im.shape
-#print('image shape: ', iH, iW, iC)
 im = im.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
 im = np.ascontiguousarray(im)  # contiguous
 im = torch.from_numpy(im)
@@ -69,7 +64,6 @@ grid_size = H
 nclasses = NC
 boxes = KA
 epsilon = 1.0/255
-
 output_channels = boxes * (nclasses + 5)
 
 f = open("dog52.vnnlib", "w")
@@ -93,7 +87,7 @@ for i in range(imf.size(dim=0)):
    f.write("(assert (<= X_" + str(i) + " " + str(ub) + "))\n")
    f.write("(assert (>= X_" + str(i) + " " + str(lb) + "))\n")
 
-# Declear output constraints
+# Declear output constraints: only check one grid cell, either no object detected or classification changes
 f.write("\n; output constraints\n\n")
 
 c_conf = d1
@@ -104,32 +98,20 @@ geo = 4 # tx, ty, tw, th
 max_conf_idx = c_conf*grid_size*grid_size + y*grid_size + x
 max_class_idx = c_class*grid_size*grid_size + y*grid_size + x
 
-#print(nn_out_flat[max_conf_idx])
-val = nn_out_flat[max_conf_idx].item()
-#conf = sigmoid(val)
-#print('Confidence: ', conf)
-#print(nn_out_flat[max_class_idx])
-
+f.write("(assert (or\n")
 # confidence constraints
+threshold = -2.2 # signmoid(threshold) = 0.1
+f.write("   (and ")
 for idx in range(boxes):
-  if idx != c_conf:
       conf_idx = idx*grid_size*grid_size + y*grid_size + x
-      f.write("(assert (>= Y_" + str(max_conf_idx) + " " + "Y_" + str(conf_idx) + "))\n")
+      f.write("(<= Y_" + str(conf_idx) + " " + str(threshold) + ") ")
+f.write(")\n")
 
 # classification constraints
 for idx in range(boxes+c_conf*nclasses, boxes+(c_conf+1)*nclasses):
   if idx != c_class:
       class_idx = idx*grid_size*grid_size + y*grid_size + x
-      f.write("(assert (>= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
-
-# bounding box constraints
-box_epsilon = 0.01
-for idx in range(boxes+boxes*nclasses+c_conf*geo, boxes+boxes*nclasses+(c_conf+1)*geo):
-         geo_idx = idx*grid_size*grid_size + y*grid_size + x
-         val = nn_out_flat[geo_idx].item()
-         ub = val + box_epsilon
-         lb = val - box_epsilon
-         f.write("(assert (<= Y_" + str(geo_idx) + " " + str(ub) + "))\n")
-         f.write("(assert (>= Y_" + str(geo_idx) + " " + str(lb) + "))\n")
+      f.write("   (and (<= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
+f.write("))\n")
 
 f.close()
