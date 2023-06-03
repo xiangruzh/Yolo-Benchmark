@@ -24,7 +24,7 @@ if __name__ == '__name__':
     output_path = 'raw_outputs'
     model_name = 'TinyYOLO.onnx'
 
-    assert os.path.exists(os.path.join('onnx', model_name))
+    # assert os.path.exists(os.path.join('onnx', model_name))
 
     sample_list = os.listdir(input_path)
 
