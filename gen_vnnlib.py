@@ -1,26 +1,14 @@
 import torch
 import numpy as np
 import math
-import os
 import cv2
+import os
 from .transform import Augmentation, BaseTransform, inverse_normalize, normalize
-
-
-<<<<<<< Updated upstream
-VOC_CLASSES = (  # always index 0
-'aeroplane', 'bicycle', 'bird', 'boat',
-'bottle', 'bus', 'car', 'cat', 'chair',
-'cow', 'diningtable', 'dog', 'horse',
-'motorbike', 'person', 'pottedplant',
-'sheep', 'sofa', 'train', 'tvmonitor')
-=======
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
 
 def gen_vnnlib(im, pred, im_name):
     save_path = 'vnnlib/'
     os.makedirs(save_path, exist_ok=True)
->>>>>>> Stashed changes
+
 
     VOC_CLASSES = (  # always index 0
         'aeroplane', 'bicycle', 'bird', 'boat',
@@ -29,8 +17,9 @@ def gen_vnnlib(im, pred, im_name):
         'motorbike', 'person', 'pottedplant',
         'sheep', 'sofa', 'train', 'tvmonitor')
 
-    nn_out =pred.cpu().numpy()
+    nn_out = pred.cpu().numpy()
     # print('NN output shape: ', nn_out.shape)
+    # pred = torch.from_numpy(nn_out)
     B, abC, H, W = pred.size()
     nn_out_flat = torch.flatten(pred)
 
@@ -51,37 +40,17 @@ def gen_vnnlib(im, pred, im_name):
     max_conf_cls = cls_pred[max_conf_idx]
     max_cls, cls_result = torch.max(max_conf_cls, dim=1)
 
-    # print('Max_Confidence: {}'.format(max_conf.cpu().numpy()))
-    # print('Max_Confidence index: {}'.format(max_conf_idx.cpu().numpy()))
-    # print('Classification result: {}, {}'.format(cls_result.cpu().numpy(), VOC_CLASSES[cls_result]))
+    # print('Max_Confidence: {}'.format(max_conf.numpy()))
+    # print('Max_Confidence index: {}'.format(max_conf_idx.numpy()))
+    # print('Classification result: {}, {}'.format(cls_result.numpy(), VOC_CLASSES[cls_result]))
 
     # calculate original max confidence index
     d2 = math.floor(max_conf_idx / (W * KA))
     d3 = math.floor((max_conf_idx - d2 * W * KA) / KA)
     d1 = max_conf_idx.item() - d2 * W * KA - d3 * KA
     # print('conf idx ', d1, d2, d3)
-    # print('left = {}'.format(max_conf.item()))
-    # print('right = {}'.format(nn_out[0, d1, d2, d3]))
     assert max_conf.item() == nn_out[0, d1, d2, d3]
 
-<<<<<<< Updated upstream
-# load image
-im = cv2.imread('dog52.jpg')  # BGR
-im = im.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
-im = np.ascontiguousarray(im)  # contiguous
-im = torch.from_numpy(im)
-iC, iH, iW = im.size()
-print('NN input shape: ',iC, iH, iW)
-im = im.float()  # uint8 to float
-im /= 255  # 0 - 255 to 0.0 - 1.0
-imf=torch.flatten(im)
-
-grid_size = H
-nclasses = NC
-boxes = KA
-epsilon = 1.0/255
-output_channels = boxes * (nclasses + 5)
-=======
     # calculate original max conf class index
     d4 = KA + d1 * NC + cls_result.item()
     # print('class idx ', d4, d2, d3)
@@ -89,60 +58,33 @@ output_channels = boxes * (nclasses + 5)
 
     # load image
     # im = cv2.imread('dog52.jpg')  # BGR
-    # # iH, iW, iC = im.shape
-    # # print('image shape: ', iH, iW, iC)
     # im = im.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
     # im = np.ascontiguousarray(im)  # contiguous
     # im = torch.from_numpy(im)
-
-    iB, iC, iH, iW = im.size()
+    iC, iH, iW = im.size()
     # print('NN input shape: ', iC, iH, iW)
     # im = im.float()  # uint8 to float
     # im /= 255  # 0 - 255 to 0.0 - 1.0
     imf = torch.flatten(im)
->>>>>>> Stashed changes
 
     grid_size = H
     nclasses = NC
     boxes = KA
     epsilon = 1.0 / 255
-
     output_channels = boxes * (nclasses + 5)
 
     f = open(os.path.join(save_path, 'TinyYOLO_prop_{}_eps_1_255.vnnlib'.format(im_name)), "w")
 
-<<<<<<< Updated upstream
-# Declear output constraints: only check one grid cell, either no object detected or classification changes
-f.write("\n; output constraints\n\n")
-=======
     # Declear inputs
     f.write("; input " + str(iC) + " x " + str(iH) + " x " + str(iW) + " brightness epsilon " + str(epsilon) + "\n\n")
     for i in range(imf.size(dim=0)):
         f.write("(declare-const X_" + str(i) + " Real)\n")
->>>>>>> Stashed changes
 
     # Declear outputs
     f.write("\n; output " + str(output_channels) + " x " + str(grid_size) + " x " + str(grid_size) + "\n\n")
     for i in range(nn_out_flat.size(dim=0)):
         f.write("(declare-const Y_" + str(i) + " Real)\n")
 
-<<<<<<< Updated upstream
-f.write("(assert (or\n")
-# confidence constraints
-threshold = -2.2 # signmoid(threshold) = 0.1
-f.write("   (and ")
-for idx in range(boxes):
-      conf_idx = idx*grid_size*grid_size + y*grid_size + x
-      f.write("(<= Y_" + str(conf_idx) + " " + str(threshold) + ") ")
-f.write(")\n")
-
-# classification constraints
-for idx in range(boxes+c_conf*nclasses, boxes+(c_conf+1)*nclasses):
-  if idx != c_class:
-      class_idx = idx*grid_size*grid_size + y*grid_size + x
-      f.write("   (and (<= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
-f.write("))\n")
-=======
     # Declear input constraints
     f.write("\n; input constraints\n\n")
     perturb = torch.ones_like(im) * epsilon
@@ -151,17 +93,16 @@ f.write("))\n")
     im_lb = normalize(torch.max(x_nat - perturb, torch.zeros_like(im)))
     imf_ub = torch.flatten(im_ub)
     imf_lb = torch.flatten(im_lb)
-
     for i in range(imf.size(dim=0)):
         # val = imf[i].item()
-        # ub = min(imf_ub[i].item(), 1.0)
-        # lb = max(imf_lb[i].item(), 0.0)
+        # ub = min(val + epsilon, 1.0)
+        # lb = max(val - epsilon, 0.0)
         ub = imf_ub[i].item()
         lb = imf_lb[i].item()
         f.write("(assert (<= X_" + str(i) + " " + str(ub) + "))\n")
         f.write("(assert (>= X_" + str(i) + " " + str(lb) + "))\n")
 
-    # Declear output constraints
+    # Declear output constraints: only check one grid cell, either no object detected or classification changes
     f.write("\n; output constraints\n\n")
 
     c_conf = d1
@@ -171,34 +112,21 @@ f.write("))\n")
     geo = 4  # tx, ty, tw, th
     max_conf_idx = c_conf * grid_size * grid_size + y * grid_size + x
     max_class_idx = c_class * grid_size * grid_size + y * grid_size + x
->>>>>>> Stashed changes
 
-    # print(nn_out_flat[max_conf_idx])
-    val = nn_out_flat[max_conf_idx].item()
-    # conf = sigmoid(val)
-    # print('Confidence: ', conf)
-    # print(nn_out_flat[max_class_idx])
-
+    f.write("(assert (or\n")
     # confidence constraints
+    threshold = -2.2  # signmoid(threshold) = 0.1
+    f.write("   (and ")
     for idx in range(boxes):
-        if idx != c_conf:
-            conf_idx = idx * grid_size * grid_size + y * grid_size + x
-            f.write("(assert (>= Y_" + str(max_conf_idx) + " " + "Y_" + str(conf_idx) + "))\n")
+        conf_idx = idx * grid_size * grid_size + y * grid_size + x
+        f.write("(<= Y_" + str(conf_idx) + " " + str(threshold) + ") ")
+    f.write(")\n")
 
     # classification constraints
     for idx in range(boxes + c_conf * nclasses, boxes + (c_conf + 1) * nclasses):
         if idx != c_class:
             class_idx = idx * grid_size * grid_size + y * grid_size + x
-            f.write("(assert (>= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
-
-    # bounding box constraints
-    box_epsilon = 0.01
-    for idx in range(boxes + boxes * nclasses + c_conf * geo, boxes + boxes * nclasses + (c_conf + 1) * geo):
-        geo_idx = idx * grid_size * grid_size + y * grid_size + x
-        val = nn_out_flat[geo_idx].item()
-        ub = val + box_epsilon
-        lb = val - box_epsilon
-        f.write("(assert (<= Y_" + str(geo_idx) + " " + str(ub) + "))\n")
-        f.write("(assert (>= Y_" + str(geo_idx) + " " + str(lb) + "))\n")
+            f.write("   (and (<= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
+    f.write("))\n")
 
     f.close()
