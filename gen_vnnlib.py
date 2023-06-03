@@ -5,10 +5,10 @@ import cv2
 import os
 from .transform import Augmentation, BaseTransform, inverse_normalize, normalize
 
+
 def gen_vnnlib(im, pred, im_name):
     save_path = 'vnnlib/'
     os.makedirs(save_path, exist_ok=True)
-
 
     VOC_CLASSES = (  # always index 0
         'aeroplane', 'bicycle', 'bird', 'boat',

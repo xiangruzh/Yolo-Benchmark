@@ -11,7 +11,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as trans
 from torch.utils.data import DataLoader
 from torch.utils.data import sampler
-from .gen_vnnlib import gen_vnnlib
+from gen_vnnlib import gen_vnnlib
 
 if __name__ == '__name__':
     parser = argparse.ArgumentParser()

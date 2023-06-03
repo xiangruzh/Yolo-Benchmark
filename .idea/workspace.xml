@@ -20,11 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ff20982-c33a-45e0-8b70-c37d31de2f95" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/generate_properties.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/transform.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vnnlib/gen_vnnlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/gen_vnnlib.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen_vnnlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/gen_vnnlib.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generate_properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_properties.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
