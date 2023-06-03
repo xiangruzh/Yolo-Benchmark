@@ -40,9 +40,9 @@ def gen_vnnlib(im, pred, im_name):
     max_conf_cls = cls_pred[max_conf_idx]
     max_cls, cls_result = torch.max(max_conf_cls, dim=1)
 
-    print('Max_Confidence: {}'.format(max_conf.numpy()))
-    print('Max_Confidence index: {}'.format(max_conf_idx.numpy()))
-    print('Classification result: {}, {}'.format(cls_result.numpy(), VOC_CLASSES[cls_result]))
+    print('Max_Confidence: {}'.format(max_conf.cpu().numpy()))
+    print('Max_Confidence index: {}'.format(max_conf_idx.cpu().numpy()))
+    print('Classification result: {}, {}'.format(cls_result.cpu().numpy(), VOC_CLASSES[cls_result]))
 
     # calculate original max confidence index
     d2 = math.floor(max_conf_idx / (W * KA))
@@ -61,7 +61,7 @@ def gen_vnnlib(im, pred, im_name):
     # im = im.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
     # im = np.ascontiguousarray(im)  # contiguous
     # im = torch.from_numpy(im)
-    iC, iH, iW = im.size()
+    iB, iC, iH, iW = im.size()
     # print('NN input shape: ', iC, iH, iW)
     # im = im.float()  # uint8 to float
     # im /= 255  # 0 - 255 to 0.0 - 1.0
