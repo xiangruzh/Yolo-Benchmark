@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data import sampler
 from gen_vnnlib import gen_vnnlib
 
-if __name__ == '__name__':
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('seed', type=int, default=0, help='random seed.')
     args = parser.parse_args()
