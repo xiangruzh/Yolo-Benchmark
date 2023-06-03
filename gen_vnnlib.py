@@ -18,7 +18,7 @@ def gen_vnnlib(im, pred, im_name):
         'sheep', 'sofa', 'train', 'tvmonitor')
 
     nn_out = pred.cpu().numpy()
-    # print('NN output shape: ', nn_out.shape)
+    print('NN output shape: ', nn_out.shape)
     # pred = torch.from_numpy(nn_out)
     B, abC, H, W = pred.size()
     nn_out_flat = torch.flatten(pred)
@@ -26,7 +26,7 @@ def gen_vnnlib(im, pred, im_name):
     KA = 5
     NC = 20
     prediction = pred.permute(0, 2, 3, 1).contiguous().view(B, -1, abC)
-    # print(prediction.size()) # 169 x 125
+    print(prediction.size()) # 169 x 125
 
     conf_pred = prediction[..., :KA].contiguous().view(B, -1, 1)
     cls_pred = prediction[..., 1 * KA: (1 + NC) * KA].contiguous().view(B, -1, NC)
@@ -40,9 +40,9 @@ def gen_vnnlib(im, pred, im_name):
     max_conf_cls = cls_pred[max_conf_idx]
     max_cls, cls_result = torch.max(max_conf_cls, dim=1)
 
-    # print('Max_Confidence: {}'.format(max_conf.numpy()))
-    # print('Max_Confidence index: {}'.format(max_conf_idx.numpy()))
-    # print('Classification result: {}, {}'.format(cls_result.numpy(), VOC_CLASSES[cls_result]))
+    print('Max_Confidence: {}'.format(max_conf.numpy()))
+    print('Max_Confidence index: {}'.format(max_conf_idx.numpy()))
+    print('Classification result: {}, {}'.format(cls_result.numpy(), VOC_CLASSES[cls_result]))
 
     # calculate original max confidence index
     d2 = math.floor(max_conf_idx / (W * KA))
