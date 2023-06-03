@@ -3,7 +3,7 @@ import numpy as np
 import math
 import cv2
 import os
-from .transform import Augmentation, BaseTransform, inverse_normalize, normalize
+from transform import Augmentation, BaseTransform, inverse_normalize, normalize
 
 
 def gen_vnnlib(im, pred, im_name):
