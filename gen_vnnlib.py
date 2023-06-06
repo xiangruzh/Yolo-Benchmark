@@ -76,7 +76,7 @@ def gen_vnnlib(im, pred, im_name):
     f = open(os.path.join(save_path, 'TinyYOLO_prop_{}_eps_1_255.vnnlib'.format(im_name)), "w")
 
     # Declear inputs
-    f.write("; input " + str(iC) + " x " + str(iH) + " x " + str(iW) + " brightness epsilon " + str(epsilon) + "\n\n")
+    # f.write("; input " + str(iC) + " x " + str(iH) + " x " + str(iW) + " brightness epsilon " + str(epsilon) + "\n\n")
     for i in range(imf.size(dim=0)):
         f.write("(declare-const X_" + str(i) + " Real)\n")
 
@@ -93,6 +93,8 @@ def gen_vnnlib(im, pred, im_name):
     im_lb = normalize(torch.max(x_nat - perturb, torch.zeros_like(im)))
     imf_ub = torch.flatten(im_ub)
     imf_lb = torch.flatten(im_lb)
+    assert torch.all(imf_ub >= imf_lb)
+
     for i in range(imf.size(dim=0)):
         # val = imf[i].item()
         # ub = min(val + epsilon, 1.0)

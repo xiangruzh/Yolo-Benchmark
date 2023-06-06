@@ -17,7 +17,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('seed', type=int, default=0, help='random seed.')
     args = parser.parse_args()
-    args.selected_instances = 50
+    args.selected_instances = 1
     args.timeout = 300
 
     input_path = 'inputs'
@@ -37,8 +37,6 @@ if __name__ == '__main__':
             im = torch.load(os.path.join(input_path, sample_list[selected_ind]))
             print(os.path.join(output_path, sample_list[selected_ind]))
             raw_output = torch.load(os.path.join(output_path, sample_list[selected_ind]))
-            print(raw_output.shape)
-            print('=================')
             gen_vnnlib(im, raw_output, im_name)
-            csv_writer.writerow([model_name, 'TinyYOLO_prop_{}_eps_1_255.vnnlib'.format(im_name), args.timeout])
+            csv_writer.writerow(['onnx/' + model_name, 'vnnlib/TinyYOLO_prop_{}_eps_1_255.vnnlib'.format(im_name), args.timeout])
             
