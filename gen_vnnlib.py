@@ -88,10 +88,12 @@ def gen_vnnlib(im, pred, im_name):
     # Declear input constraints
     f.write("\n; input constraints\n\n")
     perturb = torch.ones_like(im) * epsilon
+    print(perturb)
     x_nat = inverse_normalize(im.detach().clone())
     im_ub = normalize(torch.min(x_nat + perturb, torch.ones_like(im)))
     im_lb = normalize(torch.max(x_nat - perturb, torch.zeros_like(im)))
-    assert torch.all(x_nat + perturb >= x_nat - perturb)
+    # print(x_net + perturb)
+    assert torch.all(torch.min(x_nat + perturb, torch.ones_like(im)) >= torch.max(x_nat - perturb, torch.zeros_like(im)))
     imf_ub = torch.flatten(im_ub)
     imf_lb = torch.flatten(im_lb)
     assert torch.all(imf_ub >= imf_lb)
