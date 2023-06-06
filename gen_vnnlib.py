@@ -91,6 +91,7 @@ def gen_vnnlib(im, pred, im_name):
     x_nat = inverse_normalize(im.detach().clone())
     im_ub = normalize(torch.min(x_nat + perturb, torch.ones_like(im)))
     im_lb = normalize(torch.max(x_nat - perturb, torch.zeros_like(im)))
+    assert torch.all(torch.min(x_nat + perturb, torch.ones_like(im)) >= torch.max(x_nat - perturb, torch.zeros_like(im)))
     imf_ub = torch.flatten(im_ub)
     imf_lb = torch.flatten(im_lb)
     assert torch.all(imf_ub >= imf_lb)
