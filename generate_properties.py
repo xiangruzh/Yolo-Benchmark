@@ -24,7 +24,12 @@ if __name__ == '__main__':
     output_path = 'raw_outputs'
     model_name = 'TinyYOLO.onnx'
 
-    # assert os.path.exists(os.path.join('onnx', model_name))
+    assert os.path.exists(os.path.join('onnx', model_name))
+
+    for vnnlib_file in os.scandir('vnnlib'):
+        os.remove(vnnlib_file.path)
+    if os.path.exists('instances.csv'):
+        os.remove('instances.csv')
 
     sample_list = os.listdir(input_path)
 
