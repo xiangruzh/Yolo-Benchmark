@@ -35,7 +35,7 @@ if __name__ == '__main__':
         for selected_ind in selected:
             im_name = sample_list[selected_ind].split('.')[0]
             im = torch.load(os.path.join(input_path, sample_list[selected_ind]))
-            print(os.path.join(output_path, sample_list[selected_ind]))
+            # print(os.path.join(output_path, sample_list[selected_ind]))
             raw_output = torch.load(os.path.join(output_path, sample_list[selected_ind]))
             gen_vnnlib(im, raw_output, im_name)
             csv_writer.writerow(['onnx/' + model_name, 'vnnlib/TinyYOLO_prop_{}_eps_1_255.vnnlib'.format(im_name), args.timeout])
