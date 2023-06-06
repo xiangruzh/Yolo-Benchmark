@@ -26,6 +26,8 @@ if __name__ == '__main__':
 
     assert os.path.exists(os.path.join('onnx', model_name))
 
+    if not os.path.exists('vnnlib'):
+        os.makedirs('vnnlib')
     for vnnlib_file in os.scandir('vnnlib'):
         os.remove(vnnlib_file.path)
     if os.path.exists('instances.csv'):
