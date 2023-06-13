@@ -112,19 +112,19 @@ def gen_vnnlib(im, pred, im_name):
     y = d3
     x = d2
     # Property: the grid cell containnig the center of the object will not change
-    f.write("(assert (and\n")
+    # f.write("(assert (and\n")
     # confidence constraints: one of the bounding boxes has a confiden score > threshold
     threshold = -2.2 # signmoid(threshold) = 0.1
     for idx in range(boxes):
-      f.write("  (or\n")
+      # f.write("  (or\n")
       conf_idx = idx*grid_size*grid_size + y*grid_size + x
-      f.write("     (and (<= Y_" + str(conf_idx) + " " + str(threshold) + "))\n")
-      # classification constraints: the classification does not change
-      max_class_idx = (boxes+idx*nclasses+cls_result.item())*grid_size*grid_size + y*grid_size + x
-      for ic in range(boxes+idx*nclasses, boxes+(idx+1)*nclasses):
-         class_idx = ic*grid_size*grid_size + y*grid_size + x
-         if class_idx != max_class_idx:
-            f.write("     (and (<= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
-      f.write("  )\n")
-    f.write("))\n")
+      f.write("(assert (and (<= Y_" + str(conf_idx) + " " + str(threshold) + ")))\n")
+    #   # classification constraints: the classification does not change
+    #   max_class_idx = (boxes+idx*nclasses+cls_result.item())*grid_size*grid_size + y*grid_size + x
+    #   for ic in range(boxes+idx*nclasses, boxes+(idx+1)*nclasses):
+    #      class_idx = ic*grid_size*grid_size + y*grid_size + x
+    #      if class_idx != max_class_idx:
+    #         f.write("     (and (<= Y_" + str(max_class_idx) + " " + "Y_" + str(class_idx) + "))\n")
+    #   f.write("  )\n")
+    # f.write("))\n")
     f.close()
