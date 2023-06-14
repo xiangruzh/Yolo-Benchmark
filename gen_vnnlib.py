@@ -114,7 +114,7 @@ def gen_vnnlib(im, pred, im_name):
     # Property: the grid cell containnig the center of the object will not change
     # f.write("(assert (and\n")
     # confidence constraints: one of the bounding boxes has a confiden score > threshold
-    threshold = -2.2 # signmoid(threshold) = 0.1
+    threshold = -1 # signmoid(threshold) = 0.1
     for idx in range(boxes):
       # f.write("  (or\n")
       conf_idx = idx*grid_size*grid_size + y*grid_size + x
