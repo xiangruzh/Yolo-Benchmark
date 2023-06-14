@@ -118,7 +118,7 @@ def gen_vnnlib(im, pred, im_name):
     for idx in range(boxes):
       # f.write("  (or\n")
       conf_idx = idx*grid_size*grid_size + y*grid_size + x
-      f.write("(assert (and (<= Y_" + str(conf_idx) + " " + str(threshold) + ")))\n")
+      f.write("(assert (<= Y_" + str(conf_idx) + " " + str(threshold) + "))\n")
     #   # classification constraints: the classification does not change
     #   max_class_idx = (boxes+idx*nclasses+cls_result.item())*grid_size*grid_size + y*grid_size + x
     #   for ic in range(boxes+idx*nclasses, boxes+(idx+1)*nclasses):
