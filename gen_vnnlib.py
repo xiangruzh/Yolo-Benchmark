@@ -109,8 +109,8 @@ def gen_vnnlib(im, pred, im_name):
     # Declear output constraints: only check one grid cell, either no object detected or classification changes
     f.write("\n; output constraints\n\n")
 
-    y = d3
-    x = d2
+    x = d3
+    y = d2
     # Property: the grid cell containnig the center of the object will not change
     # f.write("(assert (and\n")
     # confidence constraints: one of the bounding boxes has a confiden score > threshold
