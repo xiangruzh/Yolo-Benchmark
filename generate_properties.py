@@ -17,7 +17,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('seed', type=int, default=0, help='random seed.')
     args = parser.parse_args()
-    args.selected_instances = 50
+    args.selected_instances = 72
     args.timeout = 300
 
     input_path = 'inputs'
